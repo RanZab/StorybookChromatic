@@ -1,9 +1,8 @@
 import React from 'react';
-import { Button, ButtonHierarchy, ButtonState } from './Button';
+import { Button, ButtonHierarchy } from './Button';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const hierarchies: ButtonHierarchy[] = ['primary', 'secondary', 'tertiary', 'alternative', 'alert'];
-const states: ButtonState[] = ['default', 'hover', 'active', 'focused', 'pressed', 'disabled'];
 
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
@@ -13,7 +12,7 @@ const meta: Meta<typeof Button> = {
     docs: {
       description: {
         component:
-          'Button component matching Figma. Only the states and variants present in Figma are implemented. No loading, selected, or icon states. Sizing, color, and typography are pixel-perfect to Figma.'
+          'Interactive Button component matching Figma. All states (hover, focus, active, disabled) are handled by CSS pseudo-classes. Only the hierarchies and variants present in Figma are implemented.'
       },
     },
   },
@@ -23,10 +22,9 @@ const meta: Meta<typeof Button> = {
       options: hierarchies,
       description: 'Button visual hierarchy, as defined in Figma.'
     },
-    state: {
-      control: { type: 'select' },
-      options: states,
-      description: 'Button state, as defined in Figma.'
+    disabled: {
+      control: { type: 'boolean' },
+      description: 'Disables the button.'
     },
     children: {
       control: { type: 'text' },
@@ -37,7 +35,7 @@ const meta: Meta<typeof Button> = {
   },
   args: {
     hierarchy: 'primary',
-    state: 'default',
+    disabled: false,
     children: 'Button',
   },
 };
@@ -48,31 +46,7 @@ type Story = StoryObj<typeof Button>;
 export const Playground: Story = {
   args: {
     hierarchy: 'primary',
-    state: 'default',
+    disabled: false,
     children: 'Button',
   },
-};
-
-export const AllVariants: Story = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-      {hierarchies.map((hierarchy) => (
-        <div key={hierarchy} style={{ display: 'flex', flexDirection: 'row', gap: 16, alignItems: 'center' }}>
-          <div style={{ width: 120, color: '#f0f0f0', fontWeight: 700, fontFamily: 'Inter, sans-serif', textTransform: 'capitalize' }}>{hierarchy}</div>
-          {states.map((state) => (
-            <Button key={state} hierarchy={hierarchy} state={state}>
-              Button
-            </Button>
-          ))}
-        </div>
-      ))}
-    </div>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'All Figma-specified button hierarchies and states, for visual regression and QA.'
-      }
-    }
-  }
 }; 
