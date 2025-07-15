@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonSC, ButtonHierarchy } from './ButtonSC';
+import ButtonSC, { ButtonHierarchy } from './ButtonSC';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const hierarchies: ButtonHierarchy[] = ['primary', 'secondary', 'tertiary', 'alternative', 'alert'];
@@ -12,7 +12,7 @@ const meta: Meta<typeof ButtonSC> = {
     docs: {
       description: {
         component:
-          'Styled-components Button component matching Figma. All states (hover, focus, active, disabled) are handled by CSS-in-JS. Only the hierarchies and variants present in Figma are implemented.'
+          'ButtonSC component matching Figma. All states (hover, focus, active, disabled) are handled by CSS-in-JS. Only the hierarchies and variants present in Figma are implemented.'
       },
     },
     backgrounds: {
@@ -38,11 +38,12 @@ const meta: Meta<typeof ButtonSC> = {
       description: 'Button label text.'
     },
     onClick: { action: 'clicked' },
+    className: { table: { disable: true } },
   },
   args: {
     hierarchy: 'primary',
     disabled: false,
-    children: 'Button',
+    children: 'ButtonSC',
   },
 };
 export default meta;
@@ -53,27 +54,33 @@ export const Playground: Story = {
   args: {
     hierarchy: 'primary',
     disabled: false,
-    children: 'Button',
+    children: 'ButtonSC',
   },
 };
 
-// Showcase all ButtonSC variants side by side
-export const AllVariants: StoryObj = {
-  render: (args: { disabled?: boolean }) => (
+export const AllVariants: Story = {
+  render: (args) => (
     <div style={{ background: '#010101', padding: 32, minHeight: 120, display: 'flex', gap: 32, alignItems: 'center' }}>
       {hierarchies.map(hierarchy => (
-        <div key={hierarchy} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-          <ButtonSC hierarchy={hierarchy} disabled={args.disabled}>
-            {hierarchy.charAt(0).toUpperCase() + hierarchy.slice(1)}
-          </ButtonSC>
-        </div>
+        <ButtonSC key={hierarchy} hierarchy={hierarchy} disabled={args.disabled}>
+          {args.children || hierarchy.charAt(0).toUpperCase() + hierarchy.slice(1)}
+        </ButtonSC>
       ))}
     </div>
   ),
   args: {
     disabled: false,
+    children: 'ButtonSC',
   },
   argTypes: {
     disabled: { control: 'boolean' },
+    children: { control: 'text' },
   },
+  parameters: {
+    docs: {
+      description: {
+        story: 'All Figma-specified ButtonSC hierarchies for visual regression and QA.'
+      }
+    }
+  }
 }; 
