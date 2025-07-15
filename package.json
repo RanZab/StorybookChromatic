@@ -26,8 +26,11 @@
     "@storybook/react": "^7.6.20",
     "@storybook/react-vite": "^7.6.20",
     "@storybook/test": "^7.6.20",
+    "autoprefixer": "^10.4.21",
     "chromatic": "^13.1.2",
+    "postcss": "^8.5.6",
     "prop-types": "^15.8.1",
-    "storybook": "^7.6.20"
+    "storybook": "^7.6.20",
+    "tailwindcss": "^4.1.11"
   }
 }
