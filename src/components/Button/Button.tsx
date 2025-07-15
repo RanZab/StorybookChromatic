@@ -15,8 +15,8 @@ const baseClasses = 'flex items-center justify-center px-4 py-2 h-8 rounded-lg f
 
 const hierarchyStyles: Record<ButtonHierarchy, string> = {
   primary: 'bg-[#e5ff00] text-[#333333]',
-  secondary: 'border border-[#e5ff00] text-[#e5ff00] bg-transparent',
-  tertiary: 'text-[#e5ff00] bg-transparent',
+  secondary: 'bg-transparent text-[#e5ff00] border border-[#e5ff00]',
+  tertiary: 'bg-transparent text-[#e5ff00]',
   alternative: 'bg-[#282828] text-[#f0f0f0]',
   alert: 'bg-[#ff3131] text-[#f0f0f0]',
 };
@@ -33,26 +33,26 @@ const stateStyles: Record<ButtonHierarchy, Record<ButtonState, string>> = {
   secondary: {
     default: '',
     hover: 'bg-[#333333] text-[#f4ff99] border-[#f4ff99]',
-    active: 'bg-neutral-700 text-[#c2ff00] border-[#c2ff00]',
-    focused: 'shadow-[0_0_0_2px_rgba(229,255,0,0.4)]',
+    active: 'bg-[#282828] text-[#c2ff00] border-[#c2ff00]',
+    focused: 'bg-[#010101] border-[#e5ff00] shadow-[0_0_0_2px_rgba(229,255,0,0.4)]',
     pressed: '',
-    disabled: 'border-[#3f3f2b] text-[#3f3f2b] cursor-not-allowed',
+    disabled: 'bg-transparent border-[#3f3f2b] text-[#3f3f2b] cursor-not-allowed',
   },
   tertiary: {
     default: '',
     hover: 'bg-[#333333] text-[#f4ff99]',
-    active: 'bg-neutral-700 text-[#c2ff00]',
+    active: 'bg-[#282828] text-[#c2ff00]',
     focused: 'shadow-[0_0_0_2px_rgba(229,255,0,0.4)]',
     pressed: '',
-    disabled: 'text-[#3f3f2b] cursor-not-allowed',
+    disabled: 'bg-transparent text-[#3f3f2b] cursor-not-allowed',
   },
   alternative: {
     default: '',
     hover: 'bg-[#333333]',
-    active: 'bg-neutral-700',
+    active: 'bg-[#282828]',
     focused: 'shadow-[0_0_0_2px_rgba(229,255,0,0.4)]',
     pressed: '',
-    disabled: 'bg-[#181818] text-neutral-700 cursor-not-allowed',
+    disabled: 'bg-[#181818] text-[#3f3f2b] cursor-not-allowed',
   },
   alert: {
     default: '',
