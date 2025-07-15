@@ -1,14 +1,17 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { InputWrapper, COLORS } from './InputBase';
+import { InputWrapper, IconWrapper as BaseIconWrapper, COLORS } from '../InputText/InputBase';
+import SearchIcon from '../../icons/Icon_search.svg?react';
 import ClearIcon from '../../icons/Icon_clear.svg?react';
 
-const StyledTextarea = styled.textarea<{
+const IconWrapper = styled(BaseIconWrapper)`
+  left: 8px !important;
+`;
+
+const StyledInput = styled.input<{
   $state: string;
   $disabled?: boolean;
   $error?: boolean;
-  $minHeight?: number;
-  $maxHeight?: number;
 }>`
   background: transparent;
   border: none;
@@ -25,17 +28,15 @@ const StyledTextarea = styled.textarea<{
   width: 100%;
   min-height: 32px;
   height: 32px !important;
-  max-height: ${({ $maxHeight }) => ($maxHeight !== undefined ? `${$maxHeight}px` : '120px')};
   box-sizing: border-box;
   transition: height 0.2s;
-  resize: none;
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow: hidden;
   vertical-align: top;
   text-align: left;
   display: block;
-  padding: 6px 8px;
+  padding: 6px 16px;
   &::placeholder {
     color: ${({ $state, $disabled }) => {
       if ($disabled) return COLORS.disabledText;
@@ -49,36 +50,9 @@ const StyledTextarea = styled.textarea<{
     `cursor: not-allowed;`}
 `;
 
-const ClearButton = styled.button`
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2;
-  transition: background 0.2s;
-  &:hover {
-    background: rgba(255,255,255,0.08);
-    border-radius: 50%;
-  }
-  &:focus {
-    outline: 2px solid #e5ff00;
-    outline-offset: 2px;
-  }
-`;
-
-export type InputTextProps = {
+export type InputSearchProps = {
   value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   disabled?: boolean;
   error?: boolean;
@@ -89,14 +63,12 @@ export type InputTextProps = {
   onClear?: () => void;
   width?: number | string;
   height?: number | string;
-  minHeight?: number;
-  maxHeight?: number;
-} & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'value' | 'placeholder' | 'disabled'>;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'placeholder' | 'disabled'>;
 
-export const InputText: React.FC<InputTextProps> = ({
+export const InputSearch: React.FC<InputSearchProps> = ({
   value: controlledValue,
   onChange,
-  placeholder = 'Add a name',
+  placeholder = 'Search...',
   disabled = false,
   error = false,
   state,
@@ -106,52 +78,15 @@ export const InputText: React.FC<InputTextProps> = ({
   onClear,
   width,
   height,
-  minHeight = 32,
-  maxHeight = 120,
   ...rest
 }) => {
   const [uncontrolledValue, setUncontrolledValue] = useState('');
   const isControlled = controlledValue !== undefined;
   const value = isControlled ? controlledValue : uncontrolledValue;
   const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [textareaHeight, setTextareaHeight] = useState<number>(minHeight);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Calculate height: only expand if text width exceeds container
-  const calculateHeight = useCallback((text: string) => {
-    if (!inputRef.current) return 32;
-    if (!text || text.length === 0) return 32;
-    const span = document.createElement('span');
-    span.style.visibility = 'hidden';
-    span.style.position = 'absolute';
-    span.style.fontSize = '14px';
-    span.style.fontFamily = 'Inter, sans-serif';
-    span.style.whiteSpace = 'nowrap';
-    span.textContent = text;
-    document.body.appendChild(span);
-    const textWidth = span.offsetWidth;
-    document.body.removeChild(span);
-    const textareaWidth = inputRef.current.offsetWidth - 32;
-    if (textWidth > textareaWidth) {
-      const textarea = inputRef.current;
-      const originalHeight = textarea.style.height;
-      textarea.style.height = 'auto';
-      const scrollHeight = textarea.scrollHeight;
-      textarea.style.height = originalHeight;
-      return Math.min(scrollHeight, maxHeight);
-    }
-    return 32;
-  }, [maxHeight]);
-
-  useEffect(() => {
-    const newHeight = calculateHeight(value || '');
-    if (inputRef.current) {
-      inputRef.current.style.height = newHeight + 'px';
-    }
-    setTextareaHeight(newHeight);
-  }, [value, minHeight, maxHeight, calculateHeight]);
-
-  let visualState: InputTextProps['state'] = 'default';
+  let visualState: InputSearchProps['state'] = 'default';
   if (disabled) visualState = 'default';
   else if (error) visualState = 'default';
   else if (isFocused && value) visualState = 'selectedFilled';
@@ -161,16 +96,9 @@ export const InputText: React.FC<InputTextProps> = ({
 
   const showClear = !disabled && !error && value && isFocused;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isControlled) setUncontrolledValue(e.target.value);
     onChange?.(e);
-    setTimeout(() => {
-      const newHeight = calculateHeight(e.target.value);
-      if (inputRef.current) {
-        inputRef.current.style.height = newHeight + 'px';
-      }
-      setTextareaHeight(newHeight);
-    }, 0);
   };
 
   const handleClear = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -179,19 +107,18 @@ export const InputText: React.FC<InputTextProps> = ({
     if (!isControlled) {
       setUncontrolledValue('');
       onChange?.({
-        ...({} as React.ChangeEvent<HTMLTextAreaElement>),
-        target: { value: '' } as HTMLTextAreaElement,
+        ...({} as React.ChangeEvent<HTMLInputElement>),
+        target: { value: '' } as HTMLInputElement,
       });
     } else {
       onChange?.({
-        ...({} as React.ChangeEvent<HTMLTextAreaElement>),
-        target: { value: '' } as HTMLTextAreaElement,
+        ...({} as React.ChangeEvent<HTMLInputElement>),
+        target: { value: '' } as HTMLInputElement,
       });
     }
     onClear?.();
     setTimeout(() => {
       inputRef.current?.focus();
-      setTextareaHeight(calculateHeight(''));
     }, 0);
   };
 
@@ -202,7 +129,10 @@ export const InputText: React.FC<InputTextProps> = ({
 
   return (
     <InputWrapper $state={visualState} $disabled={disabled} $error={error} $width={width} $height={height}>
-      <StyledTextarea
+      <IconWrapper position="left">
+        <SearchIcon width={16} height={16} />
+      </IconWrapper>
+      <StyledInput
         ref={inputRef}
         $state={visualState}
         $disabled={disabled}
@@ -220,24 +150,39 @@ export const InputText: React.FC<InputTextProps> = ({
           setIsFocused(false);
           onBlur?.();
         }}
-        style={{ height: textareaHeight, paddingLeft: 8, paddingRight: showClear ? 32 : 8 }}
-        $minHeight={minHeight}
-        $maxHeight={maxHeight}
+        style={{ paddingLeft: 24, paddingRight: showClear ? 40 : 8, height: 32 }}
         {...rest}
       />
       {showClear && (
-        <ClearButton
+        <button
           type="button"
           aria-label="Clear input"
           tabIndex={0}
           onMouseDown={handleClearMouseDown}
           onClick={handleClear}
+          style={{
+            position: 'absolute',
+            right: 8,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            margin: 0,
+            width: 18,
+            height: 18,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            zIndex: 2,
+          }}
         >
           <ClearIcon width={16} height={16} />
-        </ClearButton>
+        </button>
       )}
     </InputWrapper>
   );
 };
 
-export default InputText; 
+export default InputSearch; 

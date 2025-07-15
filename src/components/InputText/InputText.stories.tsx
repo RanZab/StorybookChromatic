@@ -14,21 +14,21 @@ export default meta;
 type Story = StoryObj<InputTextProps>;
 
 export const Default: Story = {
-  render: (args) => <InputText {...args} />,
+  render: (args: InputTextProps) => <InputText {...args} />, 
   args: {
-    placeholder: 'New Add a name',
+    placeholder: 'Add a name',
   },
 };
 
 export const Hover: Story = {
-  render: (args) => <InputText {...args} state="hover" />,
+  render: (args: InputTextProps) => <InputText {...args} state="hover" />, 
   args: {
-    placeholder: 'New Add a name',
+    placeholder: 'Add a name',
   },
 };
 
 export const Selected: Story = {
-  render: (args) => {
+  render: (args: InputTextProps) => {
     const [value, setValue] = useState('');
     return (
       <InputText
@@ -40,12 +40,12 @@ export const Selected: Story = {
     );
   },
   args: {
-    placeholder: 'New Add a name',
+    placeholder: 'Add a name',
   },
 };
 
 export const SelectedFilled: Story = {
-  render: (args) => {
+  render: (args: InputTextProps) => {
     const [value, setValue] = useState('Filled value');
     return (
       <InputText
@@ -57,12 +57,12 @@ export const SelectedFilled: Story = {
     );
   },
   args: {
-    placeholder: 'New Add a name',
+    placeholder: 'Add a name',
   },
 };
 
 export const Filled: Story = {
-  render: (args) => {
+  render: (args: InputTextProps) => {
     const [value, setValue] = useState('Filled value');
     return (
       <InputText
@@ -74,20 +74,20 @@ export const Filled: Story = {
     );
   },
   args: {
-    placeholder: 'New Add a name',
+    placeholder: 'Add a name',
   },
 };
 
 export const Disabled: Story = {
-  render: (args) => <InputText {...args} disabled />,
+  render: (args: InputTextProps) => <InputText {...args} disabled />, 
   args: {
-    placeholder: 'New Add a name',
+    placeholder: 'Add a name',
   },
 };
 
 export const Error: Story = {
-  render: (args) => <InputText {...args} error />,
+  render: (args: InputTextProps) => <InputText {...args} error />, 
   args: {
-    placeholder: 'New Add a name',
+    placeholder: 'Add a name',
   },
 }; 
